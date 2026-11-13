@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="HelmStore - katalog helm retail, grosir, dan marketplace.">
+<meta property="og:title" content="HelmStore - Toko Helm Premium">
+<meta property="og:description" content="Temukan helm pilihan Anda di HelmStore.">
+<title>HelmStore - Toko Helm Premium</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%AA%96%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ==================== RESET & VARIABEL ==================== */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+:root {
+  --primary:#0e7a5e;
+  --primary-light:#e6f4f1;
+  --secondary:#ff7a00;
+  --dark:#1f2937;
+  --gray:#6b7280;
+  --gray-light:#f3f4f6;
+  --border:#e5e7eb;
+  --success:#10b981;
+  --danger:#ef4444;
+  --b2c-color:#3b82f6; /* Biru Retail */
+  --b2b-color:#8b5cf6; /* Ungu Grosir */
+  --c2c-color:#f59e0b; /* Oranye Marketplace */
+}
+body { background:#f9fafb; color:var(--dark); overflow-x:hidden; padding-bottom: 90px; }
+.container { width:100%; max-width:1280px; margin:0 auto; background:#fff; min-height:100vh; position:relative;}
+
+/* ==================== HALAMAN (PAGES) ==================== */
+.page { display: none; padding-bottom: 20px;}
+.page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* ==================== HEADER & SEARCH ==================== */
+.header { padding: 15px 20px 10px; background: #fff; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); margin-bottom: 10px;}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+.header-title { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 5px; color: var(--dark); }
+.header-title span { color: var(--primary); }
+
+/* Toggle Switch B2B/B2C/C2C */
+.toggle-container { display: flex; background: var(--gray-light); border-radius: 20px; padding: 4px; }
+.toggle-btn { padding: 6px 12px; border: none; background: transparent; border-radius: 16px; font-size: 0.75rem; font-weight: 600; color: var(--gray); cursor: pointer; transition: 0.3s; }
+.toggle-btn.active { background: var(--primary); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+.search-bar { display: flex; gap: 10px; }
+.search-input { flex: 1; padding: 12px 15px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.85rem; background: #f9fafb; outline: none; }
+.search-input:focus { border-color: var(--primary); }
+
+/* ==================== BANNER ==================== */
+.banner { margin: 0 20px 20px; border-radius: 15px; overflow: hidden; position: relative; background: #1a1a2e; color: #fff; padding: 20px; }
+.banner img { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; opacity: 0.4; z-index: 0; }
+.banner-content { position: relative; z-index: 1; }
+.banner-tag { background: var(--secondary); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+.banner h2 { font-size: 1.4rem; margin-bottom: 5px; }
+.banner p { font-size: 0.8rem; opacity: 0.9; }
+
+/* ==================== KATEGORI GRID ==================== */
+.section-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 15px; }
+.section-title { font-size: 1.1rem; font-weight: 700; }
+.section-link { font-size: 0.85rem; color: var(--primary); font-weight: 600; text-decoration: none; cursor: pointer;}
+.category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 20px; text-align: center; }
+.cat-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+.cat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: 0.3s;}
+.cat-item:hover .cat-icon { transform: scale(1.1); }
+.cat-item span { font-size: 0.75rem; font-weight: 500; color: var(--dark); line-height: 1.2; }
+
+/* ==================== PRODUK CARD ==================== */
+.product-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; padding: 0 20px 20px; }
+.product-card { background: #fff; border: 1px solid var(--border); border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; }
+.product-card-actions { display:flex; gap:8px; margin-top:auto; }
+.product-card-actions .btn-add { flex:1; }
+.btn-icon { width:40px; border:1px solid var(--border); border-radius:8px; background:#fff; cursor:pointer; font-size:1.1rem; }
+.btn-icon[aria-pressed="true"] { color:var(--danger); border-color:var(--danger); }
+.product-stock { font-size:.75rem; color:var(--gray); margin-bottom:8px; }
+.catalog-controls { display:flex; gap:10px; padding:0 20px 15px; }
+.catalog-controls select { flex:1; min-width:0; }
+.catalog-empty { grid-column:1/-1; text-align:center; color:var(--gray); padding:36px 12px; }
+.product-img-wrap { position: relative; width: 100%; aspect-ratio: 1; background: #f9fafb; }
+.product-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.product-badge { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 3px 8px; border-radius: 5px; font-size: 0.65rem; font-weight: 600; }
+.product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+.product-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+
+/* Label Harga Spesifik */
+.price-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
+.label-b2c { background: #eff6ff; color: var(--b2c-color); }
+.label-b2b { background: #f5f3ff; color: var(--b2b-color); }
+.label-c2c { background: #fffbeb; color: var(--c2c-color); }
+
+.product-price { font-size: 1.1rem; font-weight: 800; color: var(--dark); margin-bottom: 2px; }
+.price-old { font-size: 0.75rem; color: var(--gray); text-decoration: line-through; margin-bottom: 5px; display: block;}
+.product-subprice { font-size: 0.7rem; color: var(--gray); margin-bottom: 10px; }
+.product-subprice span { color: var(--secondary); font-weight: 600; }
+.btn-add { width: 100%; padding: 8px; background: #fff; border: 1px solid var(--border); color: var(--dark); border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 5px;}
+.btn-add:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+/* ==================== KERANJANG ==================== */
+.cart-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border); }
+.cart-store { padding: 15px 20px; background: #fff; border-bottom: 8px solid var(--gray-light); }
+.store-info { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+.store-icon { font-size: 1.2rem; color: var(--primary); }
+.store-name { font-size: 0.95rem; font-weight: 700; }
+.cart-item { display: flex; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+.cart-checkbox { width: 20px; height: 20px; accent-color: var(--primary); margin-top: 5px; }
+.cart-img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); }
+.cart-details { flex: 1; }
+.cart-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; }
+.cart-price { font-size: 1rem; font-weight: 800; color: var(--dark); margin-top: 3px;}
+.cart-qty { display: flex; align-items: center; gap: 10px; margin-top: 10px; justify-content: flex-end; }
+.qty-btn { width: 28px; height: 28px; border: 1px solid var(--border); background: #fff; border-radius: 5px; font-weight: 700; cursor: pointer; }
+.qty-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.qty-val { font-size: 0.9rem; font-weight: 600; width: 20px; text-align: center; }
+.cart-warning { background: #fef2f2; border: 1px solid #fecaca; color: var(--danger); font-size: 0.75rem; padding: 10px; border-radius: 8px; margin-top: 10px; display: flex; align-items: center; gap: 5px; }
+
+/* Checkout Bar (Sticky Bottom) */
+.checkout-bar { position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 1280px; background: #fff; padding: 15px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 99; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+.checkout-total { font-size: 0.75rem; color: var(--gray); }
+.checkout-price { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+.btn-checkout { background: var(--primary); color: #fff; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+.btn-checkout:disabled { background: var(--gray); cursor: not-allowed; }
+.payment-info { margin-top: 12px; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: #fff; font-size: 0.85rem; line-height: 1.5; }
+.payment-info strong { display: block; margin-bottom: 4px; }
+.payment-info p { color: var(--gray); }
+.payment-qr { display: block; width: 180px; height: 180px; margin: 12px auto; border: 1px solid var(--border); }
+.payment-info .form-input { margin: 6px 0 10px; }
+.payment-promo-options { display: grid; gap: 8px; margin-top: 8px; }
+.promo-choice { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+.promo-choice.selected { border-color: var(--primary); background: var(--primary-light); }
+.promo-choice span { flex: 1; }
+.promo-choice strong, .promo-choice small { display: block; }
+.promo-choice small { margin-top: 3px; color: var(--gray); font-size: 0.75rem; }
+.promo-amount { white-space: nowrap; color: var(--success); font-size: 0.8rem; font-weight: 700; }
+.promo-amount.pending { color: var(--gray); }
+.order-payment-detail { margin-bottom: 8px; color: var(--gray); font-size: 0.8rem; }
+.order-resume-btn { width: 100%; margin-top: 12px; padding: 11px; border: 0; border-radius: 8px; background: var(--primary); color: #fff; font-weight: 700; cursor: pointer; }
+.order-resume-btn:hover { background: #0a654e; }
+.btn-submit:disabled { background: var(--gray); cursor: not-allowed; }
+.voucher-hint { margin-top: 6px; color: var(--gray); font-size: 0.75rem; }
+.voucher-feedback { margin-top: 6px; font-size: 0.8rem; font-weight: 600; }
+
+/* ==================== HALAMAN AKUN ==================== */
+.profile-header-acc { background: var(--primary-light); padding: 25px 20px; border-bottom: 1px solid var(--border); }
+.profile-user { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
+.avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; border: 3px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.user-info h3 { font-size: 1.1rem; font-weight: 700; color: var(--dark); }
+.user-info p { font-size: 0.8rem; color: var(--gray); }
+.badge-verified { display: inline-flex; align-items: center; gap: 5px; background: #fff; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: var(--primary); margin-top: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+.account-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+.stat-box { background: #fff; padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+.stat-box h4 { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+.stat-box p { font-size: 0.7rem; color: var(--gray); }
+
+.menu-list { background: #fff; margin: 15px 20px; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+.menu-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.menu-item:last-child { border-bottom: none; }
+.menu-icon { width: 35px; height: 35px; background: var(--gray-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-right: 15px; }
+.menu-text { flex: 1; }
+.menu-text h4 { font-size: 0.9rem; font-weight: 600; }
+.menu-text p { font-size: 0.75rem; color: var(--gray); }
+.menu-arrow { color: var(--border); font-size: 1.2rem; }
+
+.btn-logout-acc { display: block; width: calc(100% - 40px); margin: 20px; padding: 15px; background: #fff; border: 1px solid var(--danger); color: var(--danger); border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; text-align: center; }
+
+/* ==================== TRANSAKSI ==================== */
+.order-card { background: #fff; margin: 15px 20px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.order-header { padding: 15px; background: #f9fafb; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.order-id { font-size: 0.85rem; font-weight: 700; }
+.order-date { font-size: 0.75rem; color: var(--gray); }
+.order-status { font-size: 0.75rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 3px 10px; border-radius: 20px; }
+.order-body { padding: 15px; }
+.order-item { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 8px; }
+.order-total-row { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+.order-total-row span { font-size: 0.85rem; color: var(--gray); }
+.order-total-row strong { font-size: 1.1rem; color: var(--primary); }
+
+/* ==================== BOTTOM NAVIGATION ==================== */
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 1280px; background: #fff; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--gray); cursor: pointer; transition: 0.3s; position: relative; width: 20%; }
+.nav-item.active { color: var(--primary); font-weight: 700; }
+.nav-icon { font-size: 1.3rem; }
+.nav-label { font-size: 0.7rem; }
+.nav-badge { position: absolute; top: -2px; right: 15px; background: var(--secondary); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; border: 2px solid #fff; }
+
+/* ==================== MODALS ==================== */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: flex-end; justify-content: center; }
+.modal.active { display: flex; animation: fadeIn 0.3s; }
+.modal-content { background: #fff; border-radius: 20px 20px 0 0; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s; }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border); }
+.close-btn { background: var(--gray-light); border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
+.modal-body { padding: 20px; }
+
+/* Forms */
+.form-group { margin-bottom: 15px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--dark); }
+.form-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; outline: none; }
+.form-input:focus { border-color: var(--primary); }
+.btn-submit { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; margin-top: 10px; cursor: pointer; }
+.auth-tabs { display: flex; background: var(--gray-light); border-radius: 10px; padding: 5px; margin-bottom: 20px; }
+.auth-tab { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; cursor: pointer; border-radius: 8px; }
+.auth-tab.active { background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--primary); }
+
+/* Empty State */
+.empty-state { text-align: center; padding: 50px 20px; }
+.empty-state .icon { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
+.empty-state h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
+.empty-state p { font-size: 0.85rem; color: var(--gray); margin-bottom: 20px; }
+
+/* Toast */
+.toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--dark); color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
+.toast.error { background:#b91c1c; }
+.toast.success { background:#047857; }
+.toast.info { background:#1f2937; }
+.back-button { margin:16px 20px 0; padding:8px 12px; border:1px solid var(--border); border-radius:8px; background:#fff; cursor:pointer; }
+.dark-mode { --dark:#f3f4f6; --gray:#9ca3af; --gray-light:#1f2937; --border:#374151; background:#111827; color:#f3f4f6; }
+.dark-mode .container,.dark-mode .header,.dark-mode .bottom-nav,.dark-mode .product-card,.dark-mode .cart-store,.dark-mode .order-card,.dark-mode .modal-content,.dark-mode .checkout-bar,.dark-mode .menu-list { background:#111827; color:#f3f4f6; }
+.dark-mode .search-input,.dark-mode .form-input,.dark-mode .qty-btn,.dark-mode .btn-icon { background:#1f2937; color:#f3f4f6; }
+
+@media (min-width: 600px) {
+  .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; padding: 0 28px 28px; }
+  .banner, .section-header { margin-left: 28px; margin-right: 28px; }
+  .category-grid { padding-left: 28px; padding-right: 28px; }
+}
+
+@media (min-width: 900px) {
+  body { padding-bottom: 80px; }
+  .header { padding: 20px 32px 14px; }
+  .header-top { flex-wrap: nowrap; }
+  .header-title { font-size: 1.35rem; }
+  .search-bar { max-width: 640px; }
+  .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; padding: 0 32px 32px; }
+  .banner, .section-header { margin-left: 32px; margin-right: 32px; }
+  .category-grid { padding-left: 32px; padding-right: 32px; }
+  .checkout-bar { bottom: 65px; padding: 16px 32px; }
+  .bottom-nav { padding: 12px 0; }
+  .nav-item { flex-direction: row; justify-content: center; gap: 8px; }
+  .nav-icon { font-size: 1.1rem; }
+  .nav-label { font-size: 0.8rem; }
+  .modal { align-items: center; padding: 24px; }
+  .modal-content { border-radius: 20px; max-width: 560px; max-height: 85vh; }
+}
+
+@media (min-width: 1200px) {
+  .product-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- ==================== HEADER GLOBAL ==================== -->
+  <div class="header" id="globalHeader">
+    <div class="header-top">
+      <div class="header-title" onclick="navigate('home')" style="cursor:pointer;">
+        🏍️ Helm<span>Store</span>
+      </div>
+      <!-- 3 MODEL BISNIS: Retail, Grosir, Marketplace -->
+      <div class="toggle-container">
+        <button class="toggle-btn active" id="btnRetail" onclick="selectBusiness('b2c')">Retail</button>
+        <button class="toggle-btn" id="btnGrosir" onclick="selectBusiness('b2b')">Grosir</button>
+        <button class="toggle-btn" id="btnMarketplace" onclick="selectBusiness('c2c')">Marketplace</button>
+      </div>
+    </div>
+    <div class="search-bar" id="searchContainer">
+      <input type="search" class="search-input" id="searchInput" placeholder="Cari helm impianmu di sini..." aria-label="Cari produk">
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 1: BERANDA ==================== -->
+  <section id="page-home" class="page active">
+    <div class="banner">
+      <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600" alt="Banner">
+      <div class="banner-content">
+        <span class="banner-tag">PROMO SPESIAL</span>
+        <h2>Diskon Helm Premium</h2>
+        <p>Gunakan kode <b>NEWUSER</b> untuk potongan Rp 50.000!</p>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Kategori Helm</div>
+    </div>
+    <div class="category-grid">
+      <div class="cat-item" onclick="goToCategory('fullface')">
+        <div class="cat-icon" style="background:#fff0e8; color:#ff4d00;">🪖</div>
+        <span>Full Face</span>
+      </div>
+      <div class="cat-item" onclick="goToCategory('half')">
+        <div class="cat-icon" style="background:#e6f4f1; color:#0e7a5e;">🪖</div>
+        <span>Half Face</span>
+      </div>
+      <div class="cat-item" onclick="goToCategory('modular')">
+        <div class="cat-icon" style="background:#f3e8ff; color:#8b5cf6;">🪖</div>
+        <span>Modular</span>
+      </div>
+      <div class="cat-item" onclick="goToCategory('anak')">
+        <div class="cat-icon" style="background:#fef3c7; color:#f59e0b;">👶</div>
+        <span>Anak</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Produk Terlaris</div>
+      <a href="#" class="section-link" onclick="navigate('katalog')">Lihat Semua</a>
+    </div>
+    <div class="product-grid" id="homeProductGrid">
+      <!-- Diisi oleh JS -->
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 2: KATALOG ==================== -->
+  <section id="page-katalog" class="page">
+    <div class="section-header" style="margin-top:20px;">
+      <div class="section-title" id="katalogTitle">Semua Produk</div>
+    </div>
+    <div style="display:flex; gap:10px; padding:0 20px 15px; overflow-x:auto;">
+      <button class="toggle-btn active" id="filterAll" onclick="filterKatalog('all', this)" style="background:var(--primary); color:#fff;">Semua</button>
+      <button class="toggle-btn" id="filterFullface" onclick="filterKatalog('fullface', this)">Full Face</button>
+      <button class="toggle-btn" id="filterHalf" onclick="filterKatalog('half', this)">Half Face</button>
+      <button class="toggle-btn" id="filterModular" onclick="filterKatalog('modular', this)">Modular</button>
+      <button class="toggle-btn" id="filterAnak" onclick="filterKatalog('anak', this)">Anak</button>
+    </div>
+    <div class="catalog-controls">
+      <select id="sortProducts" class="form-input" aria-label="Urutkan produk" onchange="setCatalogSort(this.value)">
+        <option value="default">Urutkan: Rekomendasi</option>
+        <option value="price-asc">Harga terendah</option>
+        <option value="sold">Terlaris</option>
+        <option value="rating">Rating tertinggi</option>
+        <option value="newest">Terbaru</option>
+      </select>
+    </div>
+    <div class="product-grid" id="katalogProductGrid">
+      <!-- Diisi oleh JS -->
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 3: KERANJANG ==================== -->
+  <section id="page-keranjang" class="page">
+    <div class="cart-header">
+      <div class="section-title">Keranjang Belanja</div>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <label style="font-size:.8rem;"><input type="checkbox" id="selectAllCart" onchange="toggleSelectAll(this.checked)"> Pilih semua</label>
+        <button style="background:none; border:none; color:var(--gray); font-size:0.85rem; cursor:pointer;" onclick="clearCart()">Hapus Semua</button>
+      </div>
+    </div>
+
+    <div id="cartEmptyState" class="empty-state">
+      <div class="icon">🛒</div>
+      <h3>Keranjang Kosong</h3>
+      <p>Yuk cari helm impianmu di katalog!</p>
+      <button class="btn-submit" style="width:auto; padding:10px 30px;" onclick="navigate('katalog')">Mulai Belanja</button>
+    </div>
+
+    <div id="cartContent" style="display:none;">
+      <div class="cart-store">
+        <div class="store-info">
+          <span class="store-icon">🏍️</span>
+          <div>
+            <div class="store-name">HelmStore Official</div>
+            <!-- KETERANGAN MODE DI KERANJANG (Otomatis berubah) -->
+            <div style="font-size:0.75rem; font-weight:600;" id="cartModeText">Mode: Retail</div>
+          </div>
+        </div>
+        <div id="cartItemsList"></div>
+      </div>
+    </div>
+
+    <div class="checkout-bar" id="checkoutBar" style="display:none;">
+      <div>
+        <div class="checkout-total">Total Pembayaran</div>
+        <div class="checkout-price" id="cartTotal">Rp 0</div>
+      </div>
+      <button class="btn-checkout" id="btnCheckout" onclick="openCheckout()">Checkout</button>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 4: TRANSAKSI ==================== -->
+  <section id="page-transaksi" class="page">
+    <div class="section-header" style="margin-top:20px;">
+      <div class="section-title">Riwayat Transaksi</div>
+    </div>
+    <div id="transactionList"></div>
+  </section>
+
+  <!-- ==================== PAGE 5: AKUN ==================== -->
+  <section id="page-akun" class="page">
+    <div id="accountContent"></div>
+  </section>
+
+</div>
+
+<!-- ==================== BOTTOM NAVIGATION ==================== -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="navigate('home')">
+    <span class="nav-icon">🏠</span><span class="nav-label">Beranda</span>
+  </div>
+  <div class="nav-item" id="nav-katalog" onclick="navigate('katalog')">
+    <span class="nav-icon">📦</span><span class="nav-label">Katalog</span>
+  </div>
+  <div class="nav-item" id="nav-keranjang" onclick="navigate('keranjang')">
+    <span class="nav-icon">🛍️</span><span class="nav-label">Keranjang</span>
+    <span class="nav-badge" id="navCartCount" style="display:none;">0</span>
+  </div>
+  <div class="nav-item" id="nav-transaksi" onclick="navigate('transaksi')">
+    <span class="nav-icon">🧾</span><span class="nav-label">Transaksi</span>
+  </div>
+  <div class="nav-item" id="nav-akun" onclick="navigate('akun')">
+    <span class="nav-icon">👤</span><span class="nav-label">Akun</span>
+  </div>
+</div>
+
+<!-- ==================== MODAL AUTH ==================== -->
+<div class="modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="authTitle">Masuk / Daftar</h3>
+      <button class="close-btn" onclick="closeAuth()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Masuk</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Daftar</button>
+      </div>
+
+      <div id="loginForm">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="email@contoh.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="Password Anda" autocomplete="current-password" required>
+        </div>
+        <button class="btn-submit" onclick="doLogin()">Masuk</button>
+        <button type="button" class="section-link" style="border:0;background:none;margin-top:12px;" onclick="showToast('Pemulihan password perlu verifikasi melalui backend.','info')">Lupa Password?</button>
+      </div>
+
+      <div id="registerForm" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap</label>
+          <input type="text" id="regName" class="form-input" placeholder="Nama Anda" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="regEmail" class="form-input" placeholder="email@contoh.com" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">No. HP</label>
+          <input type="tel" id="regPhone" class="form-input" placeholder="08xxxxxxxxxx" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="regPassword" class="form-input" placeholder="Minimal 8 karakter" autocomplete="new-password" minlength="8" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Konfirmasi Password</label>
+          <input type="password" id="regPasswordConfirm" class="form-input" placeholder="Ulangi password" autocomplete="new-password" required>
+          <small id="regPasswordFeedback" class="voucher-hint" aria-live="polite"></small>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alamat Lengkap</label>
+          <textarea id="regAddress" class="form-input" rows="2" placeholder="Alamat pengiriman utama" required></textarea>
+        </div>
+        <button class="btn-submit" onclick="doRegister()">Daftar Sekarang</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL CHECKOUT ==================== -->
+<div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="checkoutTitle">Checkout Pesanan</h3>
+      <button class="close-btn" onclick="closeCheckout()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">📍 Alamat Pengiriman</label>
+        <div id="checkoutAddressList"></div>
+        <div style="display:grid;gap:8px;margin-top:10px;">
+          <input id="newAddressLabel" class="form-input" placeholder="Label alamat (contoh: Rumah)">
+          <input id="newAddressName" class="form-input" placeholder="Nama penerima">
+          <input id="newAddressPhone" class="form-input" type="tel" placeholder="Nomor telepon">
+          <textarea id="newAddressFull" class="form-input" rows="2" placeholder="Alamat lengkap"></textarea>
+          <button type="button" class="btn-checkout" onclick="addCheckoutAddress()">Simpan Alamat</button>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:20px;">
+        <label class="form-label">🏷️ Pilih Diskon Pembayaran</label>
+        <p class="voucher-hint">Promo tetap bisa dipilih sebelum minimum belanja tercapai; diskon aktif otomatis saat syarat terpenuhi. Promo pembayaran bisa digabung dengan voucher NEWUSER.</p>
+        <div id="paymentPromoOptions" class="payment-promo-options"></div>
+      </div>
+      
+      <div class="form-group" style="margin-top:20px;">
+        <label class="form-label">💳 Metode Pembayaran</label>
+        <div class="pay-options" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <label class="pay-opt" style="border:1px solid var(--border); padding:10px; border-radius:8px; display:flex; align-items:center; gap:5px; cursor:pointer;">
+            <input type="radio" name="payment" value="qris" checked onchange="handlePaymentMethodChange()"> QRIS
+          </label>
+          <label class="pay-opt" style="border:1px solid var(--border); padding:10px; border-radius:8px; display:flex; align-items:center; gap:5px; cursor:pointer;">
+            <input type="radio" name="payment" value="va" onchange="handlePaymentMethodChange()"> Transfer VA
+          </label>
+          <label class="pay-opt" style="border:1px solid var(--border); padding:10px; border-radius:8px; display:flex; align-items:center; gap:5px; cursor:pointer;">
+            <input type="radio" name="payment" value="cod" onchange="handlePaymentMethodChange()"> COD
+          </label>
+          <label class="pay-opt" style="border:1px solid var(--border); padding:10px; border-radius:8px; display:flex; align-items:center; gap:5px; cursor:pointer;">
+            <input type="radio" name="payment" value="paylater" onchange="handlePaymentMethodChange()"> Paylater
+          </label>
+        </div>
+        <div id="paymentInfo" class="payment-info" aria-live="polite"></div>
+      </div>
+
+      <div class="order-summary" style="background:var(--gray-light); padding:15px; border-radius:10px; margin-top:15px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+          <span>Subtotal</span><span id="sumSubtotal">Rp 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+          <span>Diskon Voucher</span><span id="sumVoucherDiscount" style="color:var(--success);">-Rp 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+          <span>Diskon Pembayaran</span><span id="sumPaymentDiscount" style="color:var(--success);">-Rp 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;">
+          <span>Ongkir</span><span id="sumShipping">Rp 20.000</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border); padding-top:10px; margin-top:10px; font-weight:700;">
+          <span>Total</span><span id="sumTotal" style="color:var(--primary);">Rp 0</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:15px;">
+        <div style="display:flex; gap:10px;">
+          <input type="text" id="voucherCode" class="form-input" placeholder="Kode Voucher (Cth: NEWUSER)">
+          <button class="btn-checkout" style="background:var(--gray-light); color:var(--dark); padding:0 15px;" onclick="applyVoucher()">Pakai</button>
+        </div>
+        <div class="voucher-hint">Gunakan NEWUSER untuk potongan Rp 50.000 (min. belanja Rp 200.000), berlaku untuk semua metode pembayaran.</div>
+        <div id="voucherFeedback" class="voucher-feedback" aria-live="polite"></div>
+      </div>
+
+      <button class="btn-submit" id="btnConfirmOrder" style="margin-top:20px;" onclick="processPayment()">Konfirmasi Pesanan</button>
+      <button class="btn-submit" id="btnMarkPaid" style="margin-top:8px; background:var(--success);" onclick="processPayment(true)">Saya Sudah Membayar</button>
+      <p class="voucher-hint">Tombol “Saya Sudah Membayar” hanya mengubah status simulasi dan belum diverifikasi oleh penyedia pembayaran.</p>
+      <p class="voucher-hint">Pembayaran masih berupa simulasi; QRIS, VA, dan Paylater belum terhubung ke penyedia pembayaran.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL LANJUTKAN PEMBAYARAN ==================== -->
+<div class="modal" id="pendingPaymentModal" role="dialog" aria-modal="true" aria-labelledby="pendingPaymentTitle">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="pendingPaymentTitle">Lanjutkan Pembayaran</h3>
+      <button class="close-btn" onclick="closePendingPayment()">×</button>
+    </div>
+
+    <div class="modal" id="productDetailModal" role="dialog" aria-modal="true" aria-labelledby="productDetailTitle">
+      <div class="modal-content">
+        <div class="modal-header"><h3 id="productDetailTitle">Detail Produk</h3><button class="close-btn" onclick="closeProductDetail()" aria-label="Tutup">×</button></div>
+        <div class="modal-body" id="productDetailBody"></div>
+      </div>
+    </div>
+
+    <noscript><p style="padding:20px;text-align:center;">HelmStore memerlukan JavaScript untuk menampilkan katalog dan menjalankan checkout.</p></noscript>
+    <div class="modal-body">
+      <div id="pendingPaymentDetails" class="payment-info"></div>
+      <button class="btn-submit" style="margin-top:15px; background:var(--success);" onclick="markPendingOrderPaid()">Saya Sudah Membayar</button>
+      <p class="voucher-hint">Status pembayaran diperbarui sebagai simulasi dan belum diverifikasi oleh penyedia pembayaran.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==================== DATA PRODUK (STRUKTUR HARGA) ==================== */
+// LOGIKA BISNIS: 
+// price (Retail) = Harga Baru Eceran (Paling Mahal)
+// wholesale (Grosir) = Harga Baru Partai Besar (Lebih Murah)
+// c2c (Marketplace) = Harga Barang Bekas / Preloved (Paling Murah)
+const products = [
+  { id:1, name:"Helm Full Face KYT TT Course", category:"fullface", price:1500000, wholesale:680000, c2c:550000, img:"https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?w=400", stock:15, rating:4.8, sold:120, description:"Helm full face untuk penggunaan harian dan perjalanan.", sizes:["M","L","XL"], colors:["Hitam","Merah"] },
+  { id:2, name:"Helm Half Face NHK GP-R Tech", category:"half", price:850000, wholesale:360000, c2c:280000, img:"https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400", stock:20, rating:4.7, sold:85, description:"Helm half face yang ringan untuk berkendara sehari-hari.", sizes:["M","L","XL"], colors:["Hitam","Putih"] },
+  { id:3, name:"Helm Modular VOG Max", category:"modular", price:650000, wholesale:520000, c2c:400000, img:"https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=400", stock:12, rating:4.6, sold:64, description:"Helm modular serbaguna dengan desain praktis.", sizes:["M","L","XL"], colors:["Hitam","Abu-abu"] },
+  { id:4, name:"Helm Anak KYT Kids Fun", category:"anak", price:350000, wholesale:220000, c2c:150000, img:"https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?w=400", stock:25, rating:4.9, sold:210, description:"Helm anak dengan pilihan warna cerah.", sizes:["S","M"], colors:["Merah","Biru"] },
+  { id:5, name:"Helm Full Face Shoei NXR2", category:"fullface", price:9500000, wholesale:3800000, c2c:3200000, img:"https://images.unsplash.com/photo-1591370264374-5a0dc16ee3c8?w=400", stock:5, rating:5.0, sold:12, description:"Helm full face premium untuk pengendara.", sizes:["M","L","XL"], colors:["Hitam","Putih"] },
+  { id:6, name:"Helm Half Face BMC Retro", category:"half", price:350000, wholesale:260000, c2c:180000, img:"https://images.unsplash.com/photo-1571646488148-e0a1a5e9f6ee?w=400", stock:30, rating:4.5, sold:45, description:"Helm half face bergaya retro.", sizes:["M","L"], colors:["Hitam","Krem"] },
+];
+
+/* ==================== STATE ==================== */
+let cart = [];
+let currentUser = null;
+let currentBusiness = 'b2c';
+let appliedVoucher = null;
+let selectedPaymentPromo = null;
+let catalogCategory = 'all';
+let catalogSort = 'default';
+let catalogSearch = '';
+let favorites = [];
+let catalogFavoritesOnly = false;
+const shippingCost = 20000;
+const paylaterLimit = 20000000;
+const paylaterTenors = [1, 3, 6, 12];
+const vaBanks = ['BCA', 'BNI', 'BRI', 'Mandiri', 'Permata'];
+const paymentPromos = {
+  qris: { label: 'QRIS 5%', minimum: 500000, rate: 0.05, maximum: 50000 },
+  va: { label: 'Transfer VA Rp25.000', minimum: 500000, amount: 25000 },
+  paylater: { label: 'Paylater Rp50.000', minimum: 1000000, amount: 50000 }
+};
+let checkoutReference = null;
+let pendingPaymentOrderId = null;
+let selectedVABank = 'BCA';
+let selectedPaylaterTenor = 1;
+
+/* ==================== INIT ==================== */
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await migrateLegacyPasswords();
+  } catch (error) {
+    console.error('Password migration failed:', error);
+    removeStorage('helmstore_current');
+    showToast('Akun lama belum dapat dimigrasikan. Masuk kembali setelah browser mendukung Web Crypto.', 'error');
+  }
+  loadUser();
+  loadStoreState();
+  document.getElementById('regPassword').addEventListener('input', validateRegisterPassword);
+  document.getElementById('regPasswordConfirm').addEventListener('input', validateRegisterPassword);
+  document.getElementById('searchInput').addEventListener('input', event => {
+    catalogSearch = event.target.value.trim().toLocaleLowerCase('id-ID');
+    if (catalogSearch && document.getElementById('page-home').classList.contains('active')) navigate('katalog');
+    renderKatalogProducts();
+  });
+  document.addEventListener('keydown', handleGlobalKeydown);
+  renderHomeProducts();
+  renderKatalogProducts();
+  updateCartUI();
+  renderAccount();
+});
+
+/* ==================== NAVIGASI ==================== */
+function navigate(pageId) {
+  if (pageId === 'katalog') {
+    catalogCategory = 'all';
+    catalogFavoritesOnly = false;
+    document.getElementById('katalogTitle').innerText = 'Semua Produk';
+    document.querySelectorAll('#page-katalog .toggle-btn').forEach((button, index) => {
+      button.classList.toggle('active', index === 0);
+      button.style.background = index === 0 ? 'var(--primary)' : 'transparent';
+      button.style.color = index === 0 ? '#fff' : 'var(--gray)';
+    });
+    renderKatalogProducts();
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('nav-' + pageId).classList.add('active');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const header = document.getElementById('globalHeader');
+  const searchBar = document.getElementById('searchContainer');
+  
+  if (pageId === 'home' || pageId === 'katalog') {
+    header.style.display = 'block';
+    searchBar.style.display = 'flex';
+  } else {
+    header.style.display = 'block';
+    searchBar.style.display = 'none';
+  }
+  
+  if (pageId === 'akun' || pageId === 'transaksi') {
+    header.style.display = 'none';
+  }
+
+  if (pageId === 'keranjang') renderCartPage();
+  if (pageId === 'transaksi') renderTransactions();
+  if (pageId === 'akun') renderAccount();
+}
+
+function handleGlobalKeydown(event) {
+  const modal = [...document.querySelectorAll('.modal.active')].pop();
+  if (!modal) return;
+  if (event.key === 'Escape') {
+    if (modal.id === 'checkoutModal') closeCheckout();
+    else if (modal.id === 'pendingPaymentModal') closePendingPayment();
+    else if (modal.id === 'productDetailModal') closeProductDetail();
+    else closeAuth();
+  } else if (event.key === 'Tab') {
+    const focusable = [...modal.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [href]')];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
+}
+
+/* ==================== LOGIKA KATEGORI ==================== */
+function goToCategory(category) {
+  navigate('katalog');
+  catalogCategory = category;
+  renderKatalogProducts(category);
+  
+  const titles = { fullface: 'Full Face', half: 'Half Face', modular: 'Modular', anak: 'Anak' };
+  document.getElementById('katalogTitle').innerText = titles[category] || 'Katalog';
+
+  document.querySelectorAll('#page-katalog .toggle-btn').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--gray)';
+    if (b.innerText.toLowerCase().replace(' ', '') === category) {
+      b.style.background = 'var(--primary)'; b.style.color = '#fff';
+    }
+  });
+}
+
+function filterKatalog(category, btnElement) {
+  catalogCategory = category;
+  const parent = btnElement.parentElement;
+  parent.querySelectorAll('.toggle-btn').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--gray)';
+  });
+  btnElement.style.background = 'var(--primary)'; btnElement.style.color = '#fff';
+  
+  renderKatalogProducts(category);
+  
+  const titles = { all: 'Semua Produk', fullface: 'Full Face', half: 'Half Face', modular: 'Modular', anak: 'Anak' };
+  document.getElementById('katalogTitle').innerText = titles[category] || 'Katalog';
+}
+
+/* ==================== LOGIKA MODEL BISNIS & HARGA ==================== */
+function selectBusiness(type) {
+  if (!['b2c', 'b2b', 'c2c'].includes(type)) return;
+  if (cart.length && currentBusiness !== type) {
+    if (!confirm('Mengganti mode akan mengosongkan keranjang agar harga dan tipe barang tidak tercampur. Lanjutkan?')) return;
+    cart = [];
+    saveCart();
+  }
+  currentBusiness = type;
+  writeStorage('helmstore_business', type);
+  
+  document.getElementById('btnRetail').classList.toggle('active', type === 'b2c');
+  document.getElementById('btnGrosir').classList.toggle('active', type === 'b2b');
+  document.getElementById('btnMarketplace').classList.toggle('active', type === 'c2c');
+  
+  // VALIDASI: Jika pindah ke Marketplace, reset qty jadi 1 karena barang bekas
+  renderHomeProducts();
+  renderKatalogProducts(); 
+  if(cart.length > 0) renderCartPage();
+  
+  const messages = {
+    b2c: 'Beralih ke Harga Retail',
+    b2b: 'Beralih ke Harga Grosir (B2B)',
+    c2c: 'Beralih ke Harga Marketplace'
+  };
+  showToast(messages[type]);
+}
+
+// LOGIKA PEMILIHAN HARGA YANG BENAR
+function getPrice(product) {
+  if (currentBusiness === 'b2b') return product.wholesale; // Grosir
+  if (currentBusiness === 'c2c') return product.c2c;       // Marketplace (Bekas)
+  return product.price;                                    // Retail
+}
+
+// Label indikator harga
+function getPriceLabel() {
+  if (currentBusiness === 'b2b') return { text: 'Harga Grosir', class: 'label-b2b' };
+  if (currentBusiness === 'c2c') return { text: 'Harga Marketplace', class: 'label-c2c' };
+  return { text: 'Harga Retail', class: 'label-b2c' };
+}
+
+/* ==================== RENDER PRODUK ==================== */
+function productCardHTML(p) {
+  const price = getPrice(p);
+  const isB2B = currentBusiness === 'b2b';
+  const isC2C = currentBusiness === 'c2c';
+  const priceLabel = getPriceLabel();
+  
+  let badge = '';
+  let oldPriceHTML = '';
+
+  if (isB2B) {
+    badge = '<span class="product-badge">Grosir</span>';
+    oldPriceHTML = `<span class="price-old">Rp ${formatRupiah(p.price)}</span>`;
+  } else if (isC2C) {
+    badge = `<span class="product-badge">Bekas · Stok ${p.stock}</span>`;
+    oldPriceHTML = `<span class="price-old">Rp ${formatRupiah(p.price)}</span>`;
+  } else {
+    oldPriceHTML = '';
+  }
+
+  const favorite = favorites.includes(p.id);
+  return `
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <img src="${escapeHTML(p.img)}" alt="${escapeHTML(p.name)}" onerror="this.src='https://via.placeholder.com/300?text=Helm'">
+        ${badge}
+      </div>
+      <div class="product-info">
+        <button class="product-title" style="border:0;background:none;text-align:left;cursor:pointer;" onclick="showProductDetail(${p.id})">${escapeHTML(p.name)}</button>
+        
+        <span class="price-label ${priceLabel.class}">${priceLabel.text}</span>
+        
+        <div class="product-price">Rp ${formatRupiah(price)}</div>
+        ${oldPriceHTML}
+        
+        <div class="product-subprice">${isB2B ? `Min. 10 Pcs` : `⭐ ${p.rating} • ${p.sold} Terjual`}</div>
+        <div class="product-stock">Stok tersisa: ${p.stock}</div>
+        <div class="product-card-actions">
+          <button class="btn-icon" aria-label="${favorite ? 'Hapus dari' : 'Tambah ke'} favorit ${escapeHTML(p.name)}" aria-pressed="${favorite}" onclick="toggleFavorite(${p.id})">♥</button>
+          <button class="btn-add" onclick="addToCart(${p.id})">${isB2B ? '🛒 + Grosir' : '🛒 + Keranjang'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderHomeProducts() {
+  document.getElementById('homeProductGrid').innerHTML = products.slice(0,4).map(productCardHTML).join('');
+}
+
+function renderKatalogProducts() {
+  let filtered = products.filter(product =>
+    (catalogCategory === 'all' || product.category === catalogCategory) &&
+    (!catalogSearch || product.name.toLocaleLowerCase('id-ID').includes(catalogSearch)) &&
+    (!catalogFavoritesOnly || favorites.includes(product.id))
+  );
+  if (catalogSort === 'price-asc') filtered.sort((a, b) => getPrice(a) - getPrice(b));
+  if (catalogSort === 'sold') filtered.sort((a, b) => b.sold - a.sold);
+  if (catalogSort === 'rating') filtered.sort((a, b) => b.rating - a.rating);
+  if (catalogSort === 'newest') filtered.sort((a, b) => b.id - a.id);
+  document.getElementById('katalogProductGrid').innerHTML = filtered.length
+    ? filtered.map(productCardHTML).join('')
+    : '<div class="catalog-empty">Produk tidak ditemukan. Coba kata kunci atau kategori lain.</div>';
+}
+
+function setCatalogSort(sort) {
+  catalogSort = sort;
+  renderKatalogProducts();
+}
+
+function toggleFavorite(id) {
+  favorites = favorites.includes(id) ? favorites.filter(itemId => itemId !== id) : [...favorites, id];
+  writeStorage('helmstore_favorites', favorites);
+  renderHomeProducts();
+  renderKatalogProducts();
+  showToast(favorites.includes(id) ? 'Ditambahkan ke favorit.' : 'Dihapus dari favorit.', 'success');
+}
+
+function showProductDetail(id) {
+  const product = products.find(item => item.id === id);
+  if (!product) return;
+  document.getElementById('productDetailTitle').innerText = product.name;
+  document.getElementById('productDetailBody').innerHTML = `
+    <img src="${escapeHTML(product.img)}" alt="${escapeHTML(product.name)}" style="width:100%;max-height:280px;object-fit:cover;border-radius:10px;">
+    <p style="margin:12px 0;">${escapeHTML(product.description)}</p>
+    <p>Harga: <strong>Rp ${formatRupiah(getPrice(product))}</strong></p>
+    <p>Ukuran pilihan demo: ${product.sizes.map(escapeHTML).join(', ')}</p>
+    <p>Warna pilihan demo: ${product.colors.map(escapeHTML).join(', ')}</p>
+    <p>⭐ ${product.rating} · ${product.sold} terjual. Ulasan ini merupakan ringkasan katalog, bukan ulasan pengguna.</p>
+    <p>Stok tersisa: ${product.stock}</p>
+    <button class="btn-submit" onclick="addToCart(${product.id});closeProductDetail()">Tambah ke Keranjang</button>
+  `;
+  document.getElementById('productDetailModal').classList.add('active');
+  setTimeout(() => document.getElementById('productDetailModal').querySelector('.close-btn').focus(), 0);
+}
+
+function closeProductDetail() {
+  document.getElementById('productDetailModal').classList.remove('active');
+}
+
+function showFavorites() {
+  navigate('katalog');
+  catalogFavoritesOnly = true;
+  catalogSearch = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('katalogTitle').innerText = 'Favorit Saya';
+  renderKatalogProducts();
+}
+
+/* ==================== KERANJANG ==================== */
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  if (!product || product.stock <= 0) { showToast('Produk sedang habis.', 'error'); return; }
+  const existing = cart.find(item => item.id === id);
+  const quantityToAdd = currentBusiness === 'b2b' ? 10 : 1;
+  const targetQuantity = (existing ? existing.qty : 0) + quantityToAdd;
+  if (currentBusiness === 'c2c' && targetQuantity > 1) {
+    showToast('Marketplace hanya menyediakan satu barang bekas per produk.', 'error');
+    return;
+  }
+  if (targetQuantity > product.stock) {
+    showToast(`Stok tersedia hanya ${product.stock} pcs.`, 'error');
+    return;
+  }
+  if (existing) {
+    existing.qty = targetQuantity;
+  } else {
+    cart.push({ ...product, qty: quantityToAdd, selected: true, unitPrice: getPrice(product), businessMode: currentBusiness });
+  }
+  saveCart();
+  updateCartUI();
+  showToast(`${product.name} ditambahkan${currentBusiness === 'b2b' ? ' sebanyak 10 pcs' : ''}.`, 'success');
+}
+
+function updateCartUI() {
+  const totalQty = cart.reduce((s,i) => s + i.qty, 0);
+  const badge = document.getElementById('navCartCount');
+  if (totalQty > 0) {
+    badge.innerText = totalQty;
+    badge.style.display = 'block';
+  } else {
+    badge.style.display = 'none';
+  }
+  const selectAll = document.getElementById('selectAllCart');
+  if (selectAll) {
+    const selectable = cart.length > 0;
+    selectAll.disabled = !selectable;
+    selectAll.checked = selectable && cart.every(item => item.selected);
+    selectAll.indeterminate = selectable && cart.some(item => item.selected) && !selectAll.checked;
+  }
+  if (document.getElementById('page-keranjang').classList.contains('active')) {
+    renderCartPage();
+  }
+}
+
+function renderCartPage() {
+  const empty = document.getElementById('cartEmptyState');
+  const content = document.getElementById('cartContent');
+  const bar = document.getElementById('checkoutBar');
+  const btnCheckout = document.getElementById('btnCheckout');
+
+  const modeText = { b2c: 'Retail (Baru)', b2b: 'Grosir (B2B)', c2c: 'Marketplace (Bekas)' };
+  document.getElementById('cartModeText').innerText = `Mode Aktif: ${modeText[currentBusiness]}`;
+
+  if (cart.length === 0) {
+    empty.style.display = 'block';
+    content.style.display = 'none';
+    bar.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  content.style.display = 'block';
+  bar.style.display = 'flex';
+
+  let isMoqError = false; // Flag untuk cek apakah ada error MOQ
+
+  document.getElementById('cartItemsList').innerHTML = cart.map(item => {
+    const price = item.unitPrice ?? getPrice(item);
+    const priceLabel = getPriceLabel();
+    
+    const isB2B = currentBusiness === 'b2b';
+    const isC2C = currentBusiness === 'c2c';
+    
+    // VALIDASI MOQ GROSIR
+    const isMoqMet = item.qty >= 10;
+    let warningHTML = '';
+    if (isB2B && !isMoqMet) {
+      isMoqError = true;
+      warningHTML = `
+        <div class="cart-warning">
+          ⚠️ Belum memenuhi MOQ Grosir (Min. 10 pcs). Tambah ${10 - item.qty} pcs lagi.
+        </div>
+      `;
+    }
+
+    // VALIDASI MAX 1 MARKETPLACE
+    const maxMarketplace = isC2C && item.qty > 1;
+    if(maxMarketplace) {
+      isMoqError = true;
+      warningHTML = `
+        <div class="cart-warning">
+          ⚠️ Barang bekas (Marketplace) maksimal 1 pcs.
+        </div>
+      `;
+    }
+
+    // Tombol plus mati jika mode Marketplace dan qty sudah 1
+    const plusDisabled = ((isC2C && item.qty >= 1) || item.qty >= item.stock) ? 'disabled' : '';
+
+    return `
+      <div class="cart-item">
+        <input type="checkbox" class="cart-checkbox" aria-label="Pilih ${escapeHTML(item.name)}" ${item.selected ? 'checked' : ''} onchange="toggleSelect(${item.id})">
+        <img src="${item.img}" class="cart-img" onerror="this.src='https://via.placeholder.com/70'">
+        <div class="cart-details">
+          <div class="cart-title">${item.name}</div>
+          
+          <span class="price-label ${priceLabel.class}">${priceLabel.text}</span>
+          
+          <div class="cart-price">Rp ${formatRupiah(price)}</div>
+          ${warningHTML}
+          <div class="cart-qty">
+            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+            <span class="qty-val">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, 1)" ${plusDisabled}>+</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Matikan tombol checkout jika ada barang yang belum memenuhi syarat
+  if (isMoqError) {
+    btnCheckout.disabled = true;
+    btnCheckout.innerText = 'Belum Memenuhi Syarat';
+  } else {
+    btnCheckout.disabled = false;
+    btnCheckout.innerText = 'Checkout';
+  }
+
+  calculateTotal();
+}
+
+function toggleSelect(id) {
+  const item = cart.find(i => i.id === id);
+  if(item) item.selected = !item.selected;
+  saveCart();
+  updateCartUI();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  
+  if (delta > 0 && currentBusiness === 'c2c' && item.qty >= 1) {
+    showToast('Marketplace maksimal 1 pcs per barang.', 'error');
+    return;
+  }
+  if (delta > 0 && item.qty >= item.stock) {
+    showToast(`Stok maksimum ${item.stock} pcs.`, 'error');
+    return;
+  }
+
+  item.qty += delta;
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  }
+  saveCart();
+  updateCartUI();
+}
+
+function toggleSelectAll(selected) {
+  cart.forEach(item => { item.selected = selected; });
+  saveCart();
+  updateCartUI();
+}
+
+function clearCart() {
+  if (!cart.length) return;
+  cart = [];
+  saveCart();
+  updateCartUI();
+  showToast('Keranjang dikosongkan.', 'success');
+}
+
+function calculateTotal() {
+  const subtotal = cart.filter(i => i.selected).reduce((s,i) => s + (i.unitPrice ?? getPrice(i)) * i.qty, 0);
+  document.getElementById('cartTotal').innerText = 'Rp ' + formatRupiah(subtotal);
+  return subtotal;
+}
+
+/* ==================== CHECKOUT ==================== */
+function openCheckout() {
+  const selectedItems = cart.filter(i => i.selected);
+  if (selectedItems.length === 0) { showToast('⚠️ Pilih minimal 1 barang!'); return; }
+  const invalidMoq = currentBusiness === 'b2b' && selectedItems.find(item => item.qty < 10);
+  if (invalidMoq) { showToast('Mode grosir memiliki minimum 10 pcs per produk.', 'error'); return; }
+  const unavailable = selectedItems.find(item => {
+    const product = products.find(p => p.id === item.id);
+    return !product || item.qty > product.stock;
+  });
+  if (unavailable) { showToast('Jumlah barang melebihi stok yang tersedia.', 'error'); return; }
+  if (!currentUser) { showToast('🔐 Silakan login dulu!'); setTimeout(openAuth, 500); return; }
+
+  checkoutReference = checkoutReference || 'ORD-' + Date.now();
+  selectedVABank = 'BCA';
+  selectedPaylaterTenor = 1;
+  selectedPaymentPromo = null;
+  appliedVoucher = null;
+
+  renderCheckoutAddresses();
+  document.getElementById('voucherCode').value = '';
+  document.getElementById('voucherFeedback').innerText = '';
+  document.getElementById('paymentPromoOptions').dataset.rendered = '';
+  updateCheckoutSummary();
+  document.getElementById('checkoutModal').classList.add('active');
+  setTimeout(() => document.querySelector('#checkoutModal .close-btn').focus(), 0);
+}
+
+function renderCheckoutAddresses() {
+  const addrList = document.getElementById('checkoutAddressList');
+  const addresses = Array.isArray(currentUser?.addresses) ? currentUser.addresses : [];
+  if (addresses.length) {
+    addrList.innerHTML = addresses.map(a => `
+      <label style="display:block; border:1px solid var(--border); padding:10px; border-radius:8px; margin-bottom:5px; cursor:pointer;">
+        <input type="radio" name="address" value="${escapeHTML(a.id)}" ${a.isPrimary || addresses[0] === a ? 'checked':''} onchange="updateCheckoutSummary()">
+        <b>${escapeHTML(a.label)}</b> - ${escapeHTML(a.name)}<br><span style="font-size:0.75rem; color:var(--gray);">${escapeHTML(a.full)}</span>
+      </label>
+    `).join('');
+  } else {
+    addrList.innerHTML = `<div style="color:var(--danger); font-size:0.85rem;">Tambahkan alamat pengiriman terlebih dahulu.</div>`;
+  }
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.remove('active');
+  appliedVoucher = null;
+  selectedPaymentPromo = null;
+  document.getElementById('voucherCode').value = '';
+  document.getElementById('voucherFeedback').innerText = '';
+}
+
+function addCheckoutAddress() {
+  if (!currentUser) { showToast('Silakan masuk terlebih dahulu.', 'error'); return; }
+  const label = document.getElementById('newAddressLabel').value.trim();
+  const name = document.getElementById('newAddressName').value.trim();
+  const phone = document.getElementById('newAddressPhone').value.trim();
+  const full = document.getElementById('newAddressFull').value.trim();
+  if (!label || !name || !phone || !full) { showToast('Lengkapi semua data alamat.', 'error'); return; }
+  if (!Array.isArray(currentUser.addresses)) currentUser.addresses = [];
+  currentUser.addresses.push({ id: 'a-' + Date.now(), label, name, phone, full, isPrimary: currentUser.addresses.length === 0 });
+  if (!saveCurrentUser()) return;
+  ['newAddressLabel','newAddressName','newAddressPhone','newAddressFull'].forEach(id => { document.getElementById(id).value = ''; });
+  renderCheckoutAddresses();
+  updateCheckoutSummary();
+  showToast('Alamat berhasil disimpan.', 'success');
+}
+
+function getPaymentPromoDiscount(promoKey, subtotal) {
+  const promo = paymentPromos[promoKey];
+  if (!promo || subtotal < promo.minimum) return 0;
+  if (promo.rate) return Math.min(Math.floor(subtotal * promo.rate), promo.maximum);
+  return promo.amount;
+}
+
+function getCheckoutTotals() {
+  const subtotal = cart.filter(i => i.selected).reduce((s,i) => s + (i.unitPrice ?? getPrice(i)) * i.qty, 0);
+  const selectedMethod = document.querySelector('input[name="payment"]:checked');
+  if (selectedPaymentPromo && (subtotal < paymentPromos[selectedPaymentPromo].minimum || !selectedMethod || selectedMethod.value !== selectedPaymentPromo)) {
+    selectedPaymentPromo = null;
+  }
+  const voucherDiscount = appliedVoucher === 'NEWUSER' && subtotal >= 200000 ? 50000 : 0;
+  const paymentDiscount = getPaymentPromoDiscount(selectedPaymentPromo, subtotal);
+  const discount = Math.min(subtotal, voucherDiscount + paymentDiscount);
+  const shipping = subtotal >= 1000000 ? 0 : shippingCost; 
+  const total = Math.max(1, subtotal - discount + shipping);
+  return { subtotal, voucherDiscount, paymentDiscount, discount, shipping, total };
+}
+
+function handlePaymentMethodChange() {
+  const selectedMethod = document.querySelector('input[name="payment"]:checked');
+  if (selectedPaymentPromo && (!selectedMethod || selectedPaymentPromo !== selectedMethod.value)) {
+    selectedPaymentPromo = null;
+  }
+  updateCheckoutSummary();
+}
+
+function selectPaymentPromo(promoKey) {
+  selectedPaymentPromo = promoKey || null;
+  if (selectedPaymentPromo) {
+    const paymentOption = document.querySelector(`input[name="payment"][value="${selectedPaymentPromo}"]`);
+    if (paymentOption) paymentOption.checked = true;
+  }
+  updateCheckoutSummary();
+}
+
+function renderPaymentPromos(subtotal) {
+  const container = document.getElementById('paymentPromoOptions');
+  if (!container.dataset.rendered) {
+    const noPromoOption = `
+      <label class="promo-choice">
+        <input type="radio" name="paymentPromo" value="none" onchange="selectPaymentPromo('')">
+        <span><strong>Tanpa diskon pembayaran</strong><small>Gunakan voucher NEWUSER saja jika tersedia.</small></span>
+      </label>`;
+    const promoOptions = Object.keys(paymentPromos).map(promoKey => `
+      <label class="promo-choice" data-promo="${promoKey}">
+        <input type="radio" name="paymentPromo" value="${promoKey}" onchange="selectPaymentPromo('${promoKey}')">
+        <span><strong>${paymentPromos[promoKey].label}</strong><small>Min. belanja Rp ${formatRupiah(paymentPromos[promoKey].minimum)}</small></span>
+        <span class="promo-amount"></span>
+      </label>`).join('');
+    container.innerHTML = noPromoOption + promoOptions;
+    container.dataset.rendered = 'true';
+  }
+  container.querySelector('input[value="none"]').checked = !selectedPaymentPromo;
+  container.querySelector('input[value="none"]').parentElement.classList.toggle('selected', !selectedPaymentPromo);
+  Object.keys(paymentPromos).forEach(promoKey => {
+    const option = container.querySelector(`[data-promo="${promoKey}"]`);
+    const eligible = subtotal >= paymentPromos[promoKey].minimum;
+    const selected = selectedPaymentPromo === promoKey;
+    option.querySelector('input').checked = selected;
+    option.classList.toggle('selected', selected);
+    const amount = option.querySelector('.promo-amount');
+    amount.innerText = eligible ? '-Rp ' + formatRupiah(getPaymentPromoDiscount(promoKey, subtotal)) : `Kurang Rp ${formatRupiah(paymentPromos[promoKey].minimum - subtotal)}`;
+    amount.classList.toggle('pending', !eligible);
+  });
+}
+
+function updateCheckoutSummary() {
+  const { subtotal, voucherDiscount, paymentDiscount, shipping, total } = getCheckoutTotals();
+  const selectedMethod = document.querySelector('input[name="payment"]:checked');
+  const confirmButton = document.getElementById('btnConfirmOrder');
+  const markPaidButton = document.getElementById('btnMarkPaid');
+  const paylaterOverLimit = selectedMethod && selectedMethod.value === 'paylater' && total > paylaterLimit;
+
+  document.getElementById('sumSubtotal').innerText = 'Rp ' + formatRupiah(subtotal);
+  document.getElementById('sumVoucherDiscount').innerText = '-Rp ' + formatRupiah(voucherDiscount);
+  document.getElementById('sumPaymentDiscount').innerText = '-Rp ' + formatRupiah(paymentDiscount);
+  document.getElementById('sumShipping').innerText = shipping === 0 ? 'GRATIS' : 'Rp ' + formatRupiah(shipping);
+  document.getElementById('sumTotal').innerText = 'Rp ' + formatRupiah(total);
+  confirmButton.disabled = Boolean(paylaterOverLimit);
+  markPaidButton.disabled = Boolean(paylaterOverLimit);
+  confirmButton.innerText = paylaterOverLimit ? 'Melebihi Limit Paylater' : 'Konfirmasi Pesanan';
+  renderPaymentPromos(subtotal);
+  updatePaymentDetails();
+}
+
+function getDemoVACode(bank) {
+  const prefixes = { BCA: '8808', BNI: '988', BRI: '262', Mandiri: '70012', Permata: '8528' };
+  const referenceDigits = (checkoutReference || '0000000000').replace(/\D/g, '').slice(-10).padStart(10, '0');
+  return `${prefixes[bank] || '9999'}${referenceDigits}`;
+}
+
+function updatePaymentDetails() {
+  const selectedMethod = document.querySelector('input[name="payment"]:checked');
+  if (!selectedMethod) return;
+
+  const { total } = getCheckoutTotals();
+  const paymentInfo = document.getElementById('paymentInfo');
+  const reference = 'HELMSTORE DEMO Rp ' + formatRupiah(total);
+
+  if (selectedMethod.value === 'qris') {
+    paymentInfo.innerHTML = `
+      <strong>QRIS (simulasi)</strong>
+      <img class="payment-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(reference)}" alt="QR kode simulasi">
+      <p>QR ini hanya contoh tampilan, belum dapat digunakan untuk membayar. Hubungkan payment gateway agar QRIS valid.</p>
+      <p>Total: <b>Rp ${formatRupiah(total)}</b></p>
+    `;
+  } else if (selectedMethod.value === 'va') {
+    if (!vaBanks.includes(selectedVABank)) selectedVABank = vaBanks[0];
+    const bankOptions = vaBanks.map(bank => `
+      <option value="${bank}" ${bank === selectedVABank ? 'selected' : ''}>${bank}</option>
+    `).join('');
+    const vaCode = getDemoVACode(selectedVABank);
+    paymentInfo.innerHTML = `
+      <strong>Transfer Virtual Account (simulasi)</strong>
+      <label class="form-label" for="vaBank">Pilih bank</label>
+      <select class="form-input" id="vaBank" onchange="selectedVABank = this.value; updatePaymentDetails()">${bankOptions}</select>
+      <p>Kode VA demo (${selectedVABank}): <b>${vaCode}</b></p>
+      <p>Total: <b>Rp ${formatRupiah(total)}</b></p>
+      <p>Kode ini hanya simulasi dan tidak dapat digunakan untuk transfer.</p>
+    `;
+  } else if (selectedMethod.value === 'paylater') {
+    if (total > paylaterLimit) {
+      paymentInfo.innerHTML = `
+        <strong>Paylater tidak tersedia</strong>
+        <p>Total melebihi limit simulasi Rp ${formatRupiah(paylaterLimit)}.</p>
+        <p>Total setelah voucher: <b>Rp ${formatRupiah(total)}</b></p>
+      `;
+    } else {
+      if (!paylaterTenors.includes(selectedPaylaterTenor)) selectedPaylaterTenor = paylaterTenors[0];
+      const tenorOptions = paylaterTenors.map(months => `
+        <option value="${months}" ${months === selectedPaylaterTenor ? 'selected' : ''}>
+          ${months === 1 ? 'Bayar penuh (1 kali)' : `${months} kali bayar (${months} bulan)`}
+        </option>
+      `).join('');
+      const monthlyPayment = Math.ceil(total / selectedPaylaterTenor);
+      paymentInfo.innerHTML = `
+        <strong>Paylater (simulasi)</strong>
+        <p>Limit simulasi tersedia: <b>Rp ${formatRupiah(paylaterLimit)}</b></p>
+        <label class="form-label" for="paylaterTenor">Pilih jumlah pembayaran</label>
+        <select class="form-input" id="paylaterTenor" onchange="selectedPaylaterTenor = Number(this.value); updatePaymentDetails()">${tenorOptions}</select>
+        <p>Estimasi per pembayaran: <b>Rp ${formatRupiah(monthlyPayment)}</b></p>
+        <p>Perkiraan ini belum termasuk biaya atau bunga dari penyedia Paylater.</p>
+      `;
+    }
+  } else {
+    paymentInfo.innerHTML = `
+      <strong>Bayar di tempat (COD)</strong>
+      <p>Siapkan pembayaran saat pesanan diterima.</p>
+      <p>Total: <b>Rp ${formatRupiah(total)}</b></p>
+    `;
+  }
+}
+
+function applyVoucher() {
+  const code = document.getElementById('voucherCode').value.trim().toUpperCase();
+  const feedback = document.getElementById('voucherFeedback');
+  const subtotal = cart.filter(i => i.selected).reduce((s,i) => s + (i.unitPrice ?? getPrice(i)) * i.qty, 0);
+
+  if (!code) {
+    appliedVoucher = null;
+    feedback.innerText = 'Masukkan kode voucher terlebih dahulu.';
+    feedback.style.color = 'var(--danger)';
+    showToast('Masukkan kode voucher terlebih dahulu.', 'error');
+  } else if (code === 'NEWUSER') {
+    if (subtotal < 200000) {
+      appliedVoucher = null;
+      feedback.innerText = 'Voucher NEWUSER berlaku untuk belanja minimal Rp 200.000.';
+      feedback.style.color = 'var(--danger)';
+      showToast('⚠️ Minimal belanja untuk voucher Rp 200.000', 'error');
+    } else {
+      appliedVoucher = 'NEWUSER';
+      feedback.innerText = 'Voucher NEWUSER aktif: diskon Rp 50.000 untuk semua metode pembayaran.';
+      feedback.style.color = 'var(--success)';
+      showToast('🎟️ Voucher NEWUSER berhasil dipakai!');
+    }
+  } else {
+    appliedVoucher = null;
+    feedback.innerText = 'Kode voucher tidak valid.';
+    feedback.style.color = 'var(--danger)';
+    showToast('❌ Kode voucher tidak valid', 'error');
+  }
+  updateCheckoutSummary();
+}
+
+function processPayment(alreadyPaid) {
+  if (!currentUser) { showToast('Silakan masuk sebelum checkout.', 'error'); closeCheckout(); openAuth(); return; }
+  const selectedMethod = document.querySelector('input[name="payment"]:checked');
+  if (!selectedMethod) { showToast('Pilih metode pembayaran terlebih dahulu.', 'error'); return; }
+  const method = selectedMethod.value;
+  const address = document.querySelector('input[name="address"]:checked');
+  if (!address) { showToast('Pilih atau tambahkan alamat pengiriman.', 'error'); return; }
+  const { discount, voucherDiscount, paymentDiscount, total } = getCheckoutTotals();
+  if (method === 'paylater' && total > paylaterLimit) {
+    showToast('Total pesanan melebihi limit Paylater.', 'error');
+    return;
+  }
+  if (method === 'paylater' && !paylaterTenors.includes(selectedPaylaterTenor)) {
+    showToast('Pilih jumlah pembayaran Paylater yang tersedia.', 'error');
+    return;
+  }
+
+  const selectedItems = cart.filter(i => i.selected);
+  if (selectedItems.some(item => {
+    const product = products.find(p => p.id === item.id);
+    return !product || item.qty > product.stock;
+  })) { showToast('Stok berubah atau tidak mencukupi. Perbarui keranjang.', 'error'); return; }
+  if (!alreadyPaid && !confirm('Pesanan akan dibuat dengan status Menunggu Pembayaran dan item terpilih dipindahkan dari keranjang. Lanjutkan?')) return;
+  const order = {
+    id: checkoutReference || 'ORD-' + Date.now(),
+    date: new Date().toISOString(),
+    items: selectedItems.map(i => ({...i, paidPrice: i.unitPrice ?? getPrice(i)})),
+    total: total,
+    discount: discount,
+    voucherDiscount: voucherDiscount,
+    paymentDiscount: paymentDiscount,
+    paymentPromo: selectedPaymentPromo,
+    status: alreadyPaid ? 'Sudah Dibayar' : 'Menunggu Pembayaran',
+    paidAt: alreadyPaid ? new Date().toISOString() : null,
+    method: method,
+    vaBank: method === 'va' ? selectedVABank : null,
+    vaCode: method === 'va' ? getDemoVACode(selectedVABank) : null,
+    installmentMonths: method === 'paylater' ? selectedPaylaterTenor : null,
+    installmentAmount: method === 'paylater' ? Math.ceil(total / selectedPaylaterTenor) : null,
+    addressId: address.value
+  };
+  if (!Array.isArray(currentUser.orders)) currentUser.orders = [];
+  currentUser.orders.push(order);
+  if (alreadyPaid && !commitOrderStock(order)) {
+    currentUser.orders.pop();
+    showToast('Stok tidak lagi mencukupi untuk menyelesaikan pesanan.', 'error');
+    return;
+  }
+  if (alreadyPaid && !saveProductInventory()) {
+    currentUser.orders.pop();
+    restoreOrderStock(order);
+    return;
+  }
+  if (!saveCurrentUser()) {
+    currentUser.orders.pop();
+    if (alreadyPaid) {
+      restoreOrderStock(order);
+      saveProductInventory();
+    }
+    return;
+  }
+
+  cart = cart.filter(i => !i.selected);
+  saveCart();
+  updateCartUI();
+  closeCheckout();
+  checkoutReference = null;
+
+  showToast(alreadyPaid ? 'Status pesanan ditandai sudah dibayar (simulasi).' : 'Pesanan simulasi dibuat. Pembayaran belum diproses.');
+  setTimeout(() => navigate('transaksi'), 1000);
+}
+
+/* ==================== TRANSAKSI ==================== */
+function renderTransactions() {
+  const container = document.getElementById('transactionList');
+  if (!currentUser || !currentUser.orders || currentUser.orders.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">🧾</div><h3>Belum ada transaksi</h3><p>Pesanan yang Anda buat akan tampil di sini.</p><button class="btn-submit" style="width:auto;padding:10px 30px;" onclick="navigate('katalog')">Mulai Belanja</button></div>`;
+    return;
+  }
+
+  container.innerHTML = [...currentUser.orders].reverse().map(o => `
+    <div class="order-card">
+      <div class="order-header">
+        <div>
+          <div class="order-id">${escapeHTML(o.id)}</div>
+          <div class="order-date">${new Date(o.date).toLocaleDateString('id-ID')}</div>
+        </div>
+        <div class="order-status">${escapeHTML(o.status || 'Selesai')}</div>
+      </div>
+      <div class="order-body">
+        ${(o.items || []).map(i => `<div class="order-item"><span>${escapeHTML(i.name)} (${i.qty}x)</span><span>Rp ${formatRupiah((i.paidPrice ?? 0)*i.qty)}</span></div>`).join('')}
+        ${(o.voucherDiscount || (!o.paymentDiscount ? o.discount : 0)) ? `<div class="order-item"><span>Diskon Voucher</span><span style="color:var(--success);">-Rp ${formatRupiah(o.voucherDiscount || o.discount)}</span></div>` : ''}
+        ${o.paymentDiscount ? `<div class="order-item"><span>Diskon Pembayaran${o.paymentPromo && paymentPromos[o.paymentPromo] ? ' (' + paymentPromos[o.paymentPromo].label + ')' : ''}</span><span style="color:var(--success);">-Rp ${formatRupiah(o.paymentDiscount)}</span></div>` : ''}
+        ${normalizePaymentMethod(o.method) === 'va' ? `<div class="order-payment-detail">Bank ${escapeHTML(o.vaBank || '')} · Kode VA demo: ${escapeHTML(o.vaCode || '-')}</div>` : ''}
+        ${normalizePaymentMethod(o.method) === 'paylater' ? `<div class="order-payment-detail">${o.installmentMonths || 1} kali bayar · estimasi Rp ${formatRupiah(o.installmentAmount || o.total)} per pembayaran (simulasi)</div>` : ''}
+        <div class="order-total-row">
+          <span>Total (${escapeHTML(normalizePaymentMethod(o.method).toUpperCase())})</span>
+          <strong>Rp ${formatRupiah(o.total)}</strong>
+        </div>
+        <button class="order-resume-btn" style="background:#374151;" onclick="printInvoice(this.dataset.orderId)" data-order-id="${escapeHTML(o.id)}">Cetak / Simpan Invoice PDF</button>
+        ${o.status === 'Menunggu Pembayaran' ? `<p class="order-payment-detail">Pesanan menunggu pembayaran. Pembayaran belum diverifikasi.</p><button class="order-resume-btn" onclick="resumePayment(this.dataset.orderId)" data-order-id="${escapeHTML(o.id)}">Lanjutkan Pembayaran</button><button class="order-resume-btn" style="background:#fff;color:var(--danger);border:1px solid var(--danger);" onclick="cancelPendingOrder(this.dataset.orderId)" data-order-id="${escapeHTML(o.id)}">Batalkan Pesanan</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function normalizePaymentMethod(method) {
+  return method === 'payletter' ? 'paylater' : (method || 'cod');
+}
+
+function printInvoice(orderId) {
+  const order = currentUser?.orders?.find(item => item.id === orderId);
+  if (!order) { showToast('Pesanan tidak ditemukan.', 'error'); return; }
+  const invoiceWindow = window.open('', '_blank');
+  if (!invoiceWindow) { showToast('Izinkan pop-up untuk mencetak invoice.', 'error'); return; }
+  const items = (order.items || []).map(item =>
+    `<tr><td>${escapeHTML(item.name)}</td><td>${item.qty}</td><td>Rp ${formatRupiah(item.paidPrice)}</td><td>Rp ${formatRupiah((item.paidPrice || 0) * item.qty)}</td></tr>`
+  ).join('');
+  const invoiceDocument = invoiceWindow.document;
+  invoiceDocument.title = `Invoice ${order.id}`;
+  invoiceDocument.body.style.cssText = 'font:14px Arial,sans-serif;max-width:760px;margin:40px auto;color:#222';
+  invoiceDocument.body.innerHTML = `
+    <h1>HelmStore</h1>
+    <h2>Invoice ${escapeHTML(order.id)}</h2>
+    <p>Tanggal: ${escapeHTML(new Date(order.date).toLocaleDateString('id-ID'))}</p>
+    <p>Status: ${escapeHTML(order.status || 'Selesai')}</p>
+    <table style="width:100%;border-collapse:collapse" border="1" cellpadding="8">
+      <thead><tr><th>Produk</th><th>Jumlah</th><th>Harga</th><th>Total</th></tr></thead>
+      <tbody>${items}</tbody>
+    </table>
+    <h3>Total: Rp ${formatRupiah(order.total)}</h3>
+    <p>Invoice demo; status pembayaran tidak diverifikasi oleh payment gateway.</p>
+  `;
+  invoiceWindow.focus();
+  invoiceWindow.print();
+}
+
+function commitOrderStock(order) {
+  if (order.stockCommitted) return true;
+  for (const item of order.items || []) {
+    const product = products.find(p => p.id === item.id);
+    if (!product || !Number.isInteger(item.qty) || item.qty < 1 || product.stock < item.qty) return false;
+  }
+  (order.items || []).forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    product.stock -= item.qty;
+    product.sold += item.qty;
+  });
+  order.stockCommitted = true;
+  return true;
+}
+
+function restoreOrderStock(order) {
+  if (!order.stockCommitted) return;
+  (order.items || []).forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    if (product) {
+      product.stock += item.qty;
+      product.sold = Math.max(0, product.sold - item.qty);
+    }
+  });
+  order.stockCommitted = false;
+}
+
+function cancelPendingOrder(orderId) {
+  const order = currentUser?.orders?.find(item => item.id === orderId);
+  if (!order || order.status !== 'Menunggu Pembayaran') {
+    showToast('Hanya pesanan yang menunggu pembayaran yang dapat dibatalkan.', 'error');
+    return;
+  }
+  order.status = 'Dibatalkan';
+  order.cancelledAt = new Date().toISOString();
+  if (!saveCurrentUser()) {
+    order.status = 'Menunggu Pembayaran';
+    order.cancelledAt = null;
+    return;
+  }
+  renderTransactions();
+  showToast('Pesanan dibatalkan (simulasi).', 'success');
+}
+
+function resumePayment(orderId) {
+  const order = currentUser && currentUser.orders
+    ? currentUser.orders.find(item => item.id === orderId)
+    : null;
+  if (!order || order.status !== 'Menunggu Pembayaran') {
+    showToast('Pesanan tidak ditemukan atau sudah dibayar.', 'error');
+    renderTransactions();
+    return;
+  }
+
+  pendingPaymentOrderId = order.id;
+  const details = document.getElementById('pendingPaymentDetails');
+  let methodDetails = '';
+  if (order.method === 'qris') {
+    const reference = 'HELMSTORE DEMO Rp ' + formatRupiah(order.total);
+    methodDetails = `
+      <strong>QRIS (simulasi)</strong>
+      <img class="payment-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(reference)}" alt="QR kode simulasi">
+      <p>QR ini hanya contoh dan tidak dapat digunakan untuk membayar.</p>
+    `;
+  } else if (order.method === 'va') {
+    const vaCode = order.vaCode || 'Belum tersedia';
+    methodDetails = `
+      <strong>Transfer VA (simulasi)</strong>
+      <p>Bank: <b>${escapeHTML(order.vaBank || 'Belum dipilih')}</b></p>
+      <p>Kode VA demo: <b>${escapeHTML(vaCode)}</b></p>
+      <p>Kode ini tidak dapat digunakan untuk transfer.</p>
+    `;
+  } else if (normalizePaymentMethod(order.method) === 'paylater') {
+    methodDetails = `
+      <strong>Paylater (simulasi)</strong>
+      <p>${order.installmentMonths || 1} kali bayar, estimasi Rp ${formatRupiah(order.installmentAmount || order.total)} per pembayaran.</p>
+      <p>Paylater belum terhubung ke penyedia pembayaran.</p>
+    `;
+  } else {
+    methodDetails = `
+      <strong>Bayar di tempat (COD)</strong>
+      <p>Bayar kepada kurir saat pesanan diterima.</p>
+    `;
+  }
+
+  details.innerHTML = `
+    <strong>${escapeHTML(order.id)}</strong>
+    ${methodDetails}
+    <p>Total: <b>Rp ${formatRupiah(order.total)}</b></p>
+  `;
+  document.getElementById('pendingPaymentModal').classList.add('active');
+  setTimeout(() => document.getElementById('pendingPaymentModal').querySelector('.close-btn').focus(), 0);
+}
+
+function closePendingPayment() {
+  document.getElementById('pendingPaymentModal').classList.remove('active');
+  pendingPaymentOrderId = null;
+}
+
+function markPendingOrderPaid() {
+  const order = currentUser && currentUser.orders
+    ? currentUser.orders.find(item => item.id === pendingPaymentOrderId)
+    : null;
+  if (!order || order.status !== 'Menunggu Pembayaran') {
+    showToast('Pesanan tidak ditemukan atau statusnya sudah berubah.', 'error');
+    closePendingPayment();
+    renderTransactions();
+    return;
+  }
+
+  if (!commitOrderStock(order)) {
+    showToast('Stok pesanan sudah tidak tersedia. Pesanan belum dapat ditandai dibayar.', 'error');
+    return;
+  }
+  order.status = 'Sudah Dibayar';
+  order.paidAt = new Date().toISOString();
+  if (!saveProductInventory()) {
+    order.status = 'Menunggu Pembayaran';
+    order.paidAt = null;
+    restoreOrderStock(order);
+    return;
+  }
+  if (!saveCurrentUser()) {
+    order.status = 'Menunggu Pembayaran';
+    order.paidAt = null;
+    restoreOrderStock(order);
+    saveProductInventory();
+    return;
+  }
+  closePendingPayment();
+  renderTransactions();
+  showToast('Status pesanan ditandai sudah dibayar (simulasi).');
+}
+
+/* ==================== AKUN & AUTH ==================== */
+function renderAccount() {
+  const container = document.getElementById('accountContent');
+  if (!currentUser) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">👤</div><h3>Belum Masuk</h3><p>Login untuk mengakses akun Anda.</p><button class="btn-submit" style="width:auto; padding:10px 30px;" onclick="openAuth()">Masuk / Daftar</button></div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="profile-header-acc">
+      <div class="profile-user">
+        <div class="avatar">${escapeHTML((currentUser.name || '?').charAt(0))}</div>
+        <div class="user-info">
+          <h3>${escapeHTML(currentUser.name)}</h3>
+          <p>${escapeHTML(currentUser.email)}</p>
+          <div class="badge-verified">🛡️ Member Terverifikasi</div>
+        </div>
+      </div>
+      <div class="account-stats">
+        <div class="stat-box">
+          <h4>${currentUser.orders?.length || 0}</h4>
+          <p>Pesanan</p>
+        </div>
+        <div class="stat-box">
+          <h4>120</h4>
+          <p>Poin</p>
+        </div>
+        <div class="stat-box">
+          <h4>Pro</h4>
+          <p>Tipe Akun</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-item" onclick="navigate('transaksi')">
+        <div class="menu-icon">🧾</div>
+        <div class="menu-text"><h4>Riwayat Pesanan</h4><p>Lacak pengiriman dan invoice</p></div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item" onclick="showFavorites()">
+        <div class="menu-icon">♥</div>
+        <div class="menu-text"><h4>Favorit Saya</h4><p>${favorites.length} produk tersimpan</p></div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon">📍</div>
+        <div class="menu-text"><h4>Daftar Alamat</h4><p>Kelola alamat pengiriman Anda</p></div>
+        <div class="menu-arrow">›</div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-icon">🎟️</div>
+        <div class="menu-text"><h4>Voucher & Promo</h4><p>Klaim diskon dan cashback</p></div>
+        <div class="menu-arrow">›</div>
+      </div>
+    </div>
+
+    <button class="back-button" style="margin-left:20px;" onclick="toggleDarkMode()">Ganti Tema Terang/Gelap</button>
+    <button class="btn-logout-acc" onclick="logout()">Keluar dari Akun</button>
+  `;
+}
+
+function openAuth() {
+  document.getElementById('authModal').classList.add('active');
+  setTimeout(() => document.getElementById('loginEmail').focus(), 0);
+}
+function closeAuth() { document.getElementById('authModal').classList.remove('active'); }
+function validateRegisterPassword() {
+  const password = document.getElementById('regPassword');
+  const confirmation = document.getElementById('regPasswordConfirm');
+  const feedback = document.getElementById('regPasswordFeedback');
+  const message = password.value && password.value.length < 8
+    ? 'Password minimal 8 karakter.'
+    : confirmation.value && confirmation.value !== password.value
+      ? 'Konfirmasi password belum sama.'
+      : '';
+  password.setCustomValidity(password.value.length >= 8 ? '' : 'Password minimal 8 karakter.');
+  confirmation.setCustomValidity(confirmation.value === password.value ? '' : 'Konfirmasi password tidak sama.');
+  feedback.innerText = message;
+  feedback.style.color = message ? 'var(--danger)' : 'var(--success)';
+}
+function switchAuthTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPassword').value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !pass) {
+    showToast('Masukkan email dan password yang valid.', 'error');
+    return;
+  }
+  const storedUsers = readStorage('helmstore_users', []);
+  const users = Array.isArray(storedUsers) ? storedUsers : [];
+  const user = users.find(u => u.email === email);
+  let valid = false;
+  if (user && user.passwordHash && user.passwordSalt) {
+    try { valid = await verifyPassword(pass, user.passwordSalt, user.passwordHash); }
+    catch (error) { console.error('Password verification failed:', error); showToast('Verifikasi password tidak tersedia di browser ini.', 'error'); return; }
+  } else if (user && user.password) {
+    valid = user.password === pass;
+    if (valid) {
+      try {
+        user.passwordSalt = createSalt();
+        user.passwordHash = await hashPassword(pass, user.passwordSalt);
+        delete user.password;
+        if (!writeStorage('helmstore_users', users)) return;
+      } catch (error) {
+        console.error('Legacy password migration failed:', error);
+        showToast('Browser tidak mendukung penyimpanan password demo yang lebih aman.', 'error');
+        return;
+      }
+    }
+  }
+  
+  if (!valid) { showToast('Email atau password salah.', 'error'); return; }
+  
+  currentUser = user;
+  if (!writeStorage('helmstore_current', email)) { currentUser = null; return; }
+  loadCart();
+  updateCartUI();
+  closeAuth();
+  renderAccount();
+  showToast(`Halo, ${user.name}!`, 'success');
+}
+
+async function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const phone = document.getElementById('regPhone').value.trim();
+  const pass = document.getElementById('regPassword').value;
+  const confirmPass = document.getElementById('regPasswordConfirm').value;
+  const addr = document.getElementById('regAddress').value.trim();
+
+  if (!name || !phone || !addr || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || pass.length < 8 || pass !== confirmPass) {
+    showToast('Periksa nama, email, telepon, alamat, dan password (minimal 8 karakter serta harus cocok).', 'error');
+    return;
+  }
+
+  const storedUsers = readStorage('helmstore_users', []);
+  const users = Array.isArray(storedUsers) ? storedUsers : [];
+  if (users.find(u => u.email === email)) { showToast('⚠️ Email sudah terdaftar!', 'error'); return; }
+
+  let newUser;
+  try {
+    const passwordSalt = createSalt();
+    const passwordHash = await hashPassword(pass, passwordSalt);
+    newUser = {
+      name, email, phone, passwordSalt, passwordHash,
+      orders: [],
+      addresses: [{ id: 'a1', label: 'Utama', name, phone, full: addr, isPrimary: true }]
+    };
+  } catch (error) {
+    console.error('Password hashing failed:', error);
+    showToast('Browser tidak mendukung pembuatan akun demo yang lebih aman.', 'error');
+    return;
+  }
+
+  users.push(newUser);
+  if (!writeStorage('helmstore_users', users) || !writeStorage('helmstore_current', email)) return;
+  currentUser = newUser;
+  loadCart();
+  closeAuth();
+  renderAccount();
+  showToast('Registrasi berhasil.', 'success');
+}
+
+function logout() {
+  currentUser = null;
+  cart = [];
+  removeStorage('helmstore_current');
+  saveCart();
+  updateCartUI();
+  renderAccount();
+  showToast('Anda telah keluar.', 'success');
+}
+
+function saveCurrentUser() {
+  if (!currentUser || !currentUser.email) {
+    showToast('Akun tidak tersedia. Pesanan tidak disimpan.', 'error');
+    return false;
+  }
+  const storedUsers = readStorage('helmstore_users', []);
+  const users = Array.isArray(storedUsers) ? storedUsers : [];
+  const idx = users.findIndex(u => u.email === currentUser.email);
+  if (idx < 0) {
+    showToast('Data akun tidak ditemukan. Perubahan tidak disimpan.', 'error');
+    return false;
+  }
+  users[idx] = currentUser;
+  return writeStorage('helmstore_users', users);
+}
+
+function loadUser() {
+  const email = readStorage('helmstore_current', null);
+  const storedUsers = readStorage('helmstore_users', []);
+  const users = Array.isArray(storedUsers) ? storedUsers : [];
+  currentUser = email ? users.find(u => u.email === email) || null : null;
+}
+
+/* ==================== UTILS ==================== */
+function formatRupiah(num) {
+  const value = Number(num);
+  return (Number.isFinite(value) ? Math.round(value) : 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+
+function showToast(msg, type = 'info') {
+  const t = document.createElement('div');
+  t.className = `toast ${['success', 'error', 'info'].includes(type) ? type : 'info'}`;
+  t.innerText = msg;
+  t.setAttribute('role', type === 'error' ? 'alert' : 'status');
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+function readStorage(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : JSON.parse(value);
+  } catch (error) {
+    console.error(`Unable to read local storage key "${key}":`, error);
+    showToast('Data lokal tidak dapat dibaca. Periksa penyimpanan browser.', 'error');
+    return fallback;
+  }
+}
+
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch (error) {
+    console.error(`Unable to save local storage key "${key}":`, error);
+    showToast('Penyimpanan browser gagal. Perubahan belum tersimpan.', 'error');
+    return false;
+  }
+}
+
+function removeStorage(key) {
+  try { localStorage.removeItem(key); return true; }
+  catch (error) {
+    console.error(`Unable to remove local storage key "${key}":`, error);
+    showToast('Data sesi tidak dapat dihapus dari browser.', 'error');
+    return false;
+  }
+}
+
+function createSalt() {
+  if (!window.crypto?.getRandomValues) throw new Error('Secure randomness unavailable');
+  return Array.from(window.crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function hashPassword(password, saltHex) {
+  if (!window.crypto?.subtle || !window.TextEncoder) throw new Error('Web Crypto unavailable');
+  const salt = new Uint8Array(saltHex.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+  const key = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await window.crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations: 120000, hash: 'SHA-256' }, key, 256);
+  return Array.from(new Uint8Array(bits), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyPassword(password, salt, expectedHash) {
+  const actualHash = await hashPassword(password, salt);
+  if (actualHash.length !== expectedHash.length) return false;
+  let difference = 0;
+  for (let index = 0; index < actualHash.length; index++) difference |= actualHash.charCodeAt(index) ^ expectedHash.charCodeAt(index);
+  return difference === 0;
+}
+
+async function migrateLegacyPasswords() {
+  const storedUsers = readStorage('helmstore_users', []);
+  const users = Array.isArray(storedUsers) ? storedUsers : [];
+  let changed = false;
+  for (const user of users) {
+    if (typeof user.password !== 'string') continue;
+    user.passwordSalt = createSalt();
+    user.passwordHash = await hashPassword(user.password, user.passwordSalt);
+    delete user.password;
+    changed = true;
+  }
+  if (changed && !writeStorage('helmstore_users', users)) throw new Error('Legacy password migration could not be saved');
+}
+
+function cartStorageKey() {
+  return `helmstore_cart_${currentUser ? encodeURIComponent(currentUser.email.toLowerCase()) : 'guest'}`;
+}
+
+function saveCart() {
+  return writeStorage(cartStorageKey(), cart.map(item => ({
+    id: item.id, qty: item.qty, selected: item.selected,
+    unitPrice: item.unitPrice ?? getPrice(item), businessMode: item.businessMode || currentBusiness
+  })));
+}
+
+function loadCart() {
+  const saved = readStorage(cartStorageKey(), []);
+  cart = Array.isArray(saved) ? saved.flatMap(item => {
+    const product = products.find(p => p.id === Number(item.id));
+    const qty = Number(item.qty);
+    if (!product || !Number.isInteger(qty) || qty < 1) return [];
+    return [{ ...product, qty, selected: item.selected !== false, unitPrice: Number(item.unitPrice) || getPrice(product), businessMode: item.businessMode || currentBusiness }];
+  }) : [];
+}
+
+function loadStoreState() {
+  const savedBusiness = readStorage('helmstore_business', 'b2c');
+  currentBusiness = ['b2c', 'b2b', 'c2c'].includes(savedBusiness) ? savedBusiness : 'b2c';
+  const savedFavorites = readStorage('helmstore_favorites', []);
+  favorites = (Array.isArray(savedFavorites) ? savedFavorites : []).filter(id => products.some(product => product.id === id));
+  const storedInventory = readStorage('helmstore_inventory', {});
+  const inventory = storedInventory && typeof storedInventory === 'object' && !Array.isArray(storedInventory) ? storedInventory : {};
+  products.forEach(product => {
+    const saved = inventory[product.id];
+    if (saved && Number.isInteger(saved.stock) && saved.stock >= 0 && Number.isInteger(saved.sold) && saved.sold >= 0) {
+      product.stock = saved.stock;
+      product.sold = saved.sold;
+    }
+  });
+  document.getElementById('btnRetail').classList.toggle('active', currentBusiness === 'b2c');
+  document.getElementById('btnGrosir').classList.toggle('active', currentBusiness === 'b2b');
+  document.getElementById('btnMarketplace').classList.toggle('active', currentBusiness === 'c2c');
+  document.body.classList.toggle('dark-mode', readStorage('helmstore_dark_mode', false));
+  loadCart();
+}
+
+function saveProductInventory() {
+  const inventory = Object.fromEntries(products.map(product => [product.id, { stock: product.stock, sold: product.sold }]));
+  return writeStorage('helmstore_inventory', inventory);
+}
+
+function toggleDarkMode() {
+  const enabled = document.body.classList.toggle('dark-mode');
+  writeStorage('helmstore_dark_mode', enabled);
+}
+</script>
+</body>
+</html>
